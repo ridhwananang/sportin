@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->string('customer_name')->nullable(); // untuk booking offline
+            $table->string('customer_name')->nullable();
             $table->string('kode_booking')->unique();
             $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('pending');
             $table->timestamp('start_at');
             $table->timestamp('end_at');
-            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null'); // admin pembuat
             $table->enum('payment_status', ['unpaid', 'paid'])->default('unpaid');
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null'); // bisa null jika offline
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('sport_id')->constrained('sports')->onDelete('cascade');
             $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
             $table->timestamps();

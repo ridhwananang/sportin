@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('booking_id')->constrained('bookings')->onDelete('cascade');
             $table->foreignId('discount_id')->nullable()->constrained('discounts')->onDelete('cascade');
             $table->float('ppn');
-            $table->integer('total_amount'); // Total amount after applying discount and PPN
+            $table->integer('total_amount');
             $table->timestamps();
         });
     }

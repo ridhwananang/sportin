@@ -15,10 +15,10 @@ class Booking extends Model
         'start_at',
         'end_at',
         'payment_status',
+        'created_by',
         'user_id',
         'sport_id',
         'area_id',
-        'created_by',
     ];
 
     public function user(): BelongsTo

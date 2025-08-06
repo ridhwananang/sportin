@@ -49,8 +49,12 @@ export function AppSidebar() {
                       href: '/areas',
                       icon: Folder,
                   },
+                  {   title: 'Sport',
+                      href: '/sports',
+                      icon: Folder },
               ]
             : []),
+            
     ];
 
     return (
