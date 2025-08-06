@@ -20,7 +20,7 @@ class Area extends Model
         return $this->hasMany(Booking::class);
     }
 
-    public function sport(): BelongsToMany
+    public function sports(): BelongsToMany
     {
         return $this->belongsToMany(Sport::class, 'areas_sports')
             ->withPivot('active')
