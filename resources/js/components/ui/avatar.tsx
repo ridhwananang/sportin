@@ -11,7 +11,8 @@ function Avatar({
     <AvatarPrimitive.Root
       data-slot="avatar"
       className={cn(
-        "relative flex size-8 shrink-0 overflow-hidden rounded-full",
+        // STYLE DITAMBAHKAN DI SINI
+        "relative flex size-16 shrink-0 overflow-hidden rounded-full ring-4 ring-[#006359] transition-transform duration-300 hover:scale-105",
         className
       )}
       {...props}
@@ -26,7 +27,11 @@ function AvatarImage({
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
-      className={cn("aspect-square size-full", className)}
+      className={cn(
+        // Pastikan gambar full
+        "aspect-square size-full object-cover",
+        className
+      )}
       {...props}
     />
   )
@@ -40,7 +45,8 @@ function AvatarFallback({
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
       className={cn(
-        "bg-muted flex size-full items-center justify-center rounded-full",
+        // STYLE DITAMBAHKAN DI SINI
+        "bg-[#e0e0e0] text-[#006359] font-bold flex size-full items-center justify-center rounded-full uppercase text-lg",
         className
       )}
       {...props}

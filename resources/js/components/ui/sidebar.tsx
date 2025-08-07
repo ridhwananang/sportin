@@ -1,7 +1,9 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeftIcon } from "lucide-react"
+// import { PanelLeftIcon } from "lucide-react"
+import { useState } from 'react'
+
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -248,31 +250,63 @@ function Sidebar({
   )
 }
 
-function SidebarTrigger({
-  className,
-  onClick,
-  ...props
-}: React.ComponentProps<typeof Button>) {
+function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<typeof Button>) {
   const { toggleSidebar } = useSidebar()
+  const [open, setOpen] = useState(false)
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setOpen(!open)
+    onClick?.(event)
+    toggleSidebar()
+  }
 
   return (
     <Button
       data-sidebar="trigger"
-      data-slot="sidebar-trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-7 w-7", className)}
-      onClick={(event) => {
-        onClick?.(event)
-        toggleSidebar()
-      }}
+      className={cn(
+        "h-10 w-10 rounded-full bg-white shadow-md transition-all duration-300 hover:scale-110 hover:shadow-lg",
+        open ? "bg-red-100" : "bg-blue-100",
+        className
+      )}
+      onClick={handleClick}
       {...props}
     >
-      <PanelLeftIcon />
+      {/* SVG Hamburger */}
+      {!open && (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 text-blue-700 transition-all duration-300"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      )}
+
+      {/* SVG Close / X */}
+      {open && (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 text-red-600 transition-all duration-300"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      )}
+
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
 }
+
+export default SidebarTrigger
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
   const { toggleSidebar } = useSidebar()
