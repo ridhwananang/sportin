@@ -6,38 +6,31 @@ use App\Models\Area;
 use Inertia\Inertia;
 use App\Models\Sport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class SportController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $sports = Sport::with('areas')->latest()->get(); // default pakai created_at
-
+        $sports = Sport::with('areas')->latest()->get();
 
         return Inertia::render('Sports/Index', [
             'sports' => $sports,
+            'auth' => [
+                'user' => Auth::user(),
+            ]
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $areas = Area::all();
-
         return Inertia::render('Sports/Create', [
             'areas' => $areas,
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -57,7 +50,6 @@ class SportController extends Controller
 
         $sport = Sport::create($validated);
 
-        // Sinkronisasi area ke pivot table
         if (isset($validated['area_ids'])) {
             $sport->areas()->sync($validated['area_ids']);
         }
@@ -65,17 +57,14 @@ class SportController extends Controller
         return redirect()->route('sports.index')->with('success', 'Sport created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Sport $sport)
     {
-        //
+        $sport->load('areas');
+        return Inertia::render('Sports/Show', [
+            'sport' => $sport,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Sport $sport)
     {
         $sport->load('areas');
@@ -88,9 +77,6 @@ class SportController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Sport $sport)
     {
         $validated = $request->validate([
@@ -104,14 +90,12 @@ class SportController extends Controller
             'area_ids.*' => 'exists:areas,id',
         ]);
 
-        // Tangani file image
         if ($request->hasFile('image')) {
             if ($sport->image) {
                 Storage::disk('public')->delete($sport->image);
             }
             $validated['image'] = $request->file('image')->store('sports', 'public');
         } else {
-            // Hapus field image dari $validated agar tidak ikut diupdate
             unset($validated['image']);
         }
 
@@ -124,10 +108,6 @@ class SportController extends Controller
         return redirect()->route('sports.index')->with('success', 'Sport updated successfully.');
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Sport $sport)
     {
         if ($sport->image) {

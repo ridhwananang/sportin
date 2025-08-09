@@ -76,3 +76,33 @@ export interface PageProps {
   errors: Record<string, string>;
   [key: string]: unknown;
 }
+
+export interface Booking {
+  id: number;
+  customer_name: string;
+  kode_booking: string;
+  status: 'pending' | 'confirmed' | 'cancelled';
+  payment_status: 'unpaid' | 'paid';
+  start_at: string;
+  end_at: string;
+  created_by: number | null;
+  user_id: number | null;
+  sport_id: number;
+  area_id: number;
+  created_at: string;
+  updated_at: string;
+
+  sport?: Sport;
+  area?: Area;
+  user?: User;
+  createdBy?: User;
+}
+
+export interface Discount {
+  id: number;
+  name: string;
+  percentage: number; // persentase diskon, misalnya 10 untuk 10%
+  created_at: string;
+  updated_at: string;
+}
+

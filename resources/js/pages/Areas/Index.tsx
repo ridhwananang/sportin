@@ -2,6 +2,7 @@ import React from 'react';
 import { usePage, Link } from '@inertiajs/react';
 import { PageProps, Area } from '@/types';
 import AppLayout from '@/layouts/app-layout';
+import { router } from '@inertiajs/react';
 
 interface Props extends PageProps {
   areas: Area[];
@@ -9,7 +10,11 @@ interface Props extends PageProps {
 
 const AreaIndex: React.FC = () => {
   const { areas } = usePage<Props>().props;
-
+const handleDelete = (id: number) => {
+  if (confirm('Yakin ingin menghapus area ini?')) {
+    router.delete(`/areas/${id}`);
+  }
+};
   return (
     <AppLayout>
     <div className="p-4">
@@ -45,6 +50,13 @@ const AreaIndex: React.FC = () => {
                 >
                   Edit
                 </Link>
+                <button
+  onClick={() => handleDelete(area.id)}
+  className="text-red-600 hover:underline"
+>
+  Hapus
+</button>
+
               </td>
             </tr>
           ))}

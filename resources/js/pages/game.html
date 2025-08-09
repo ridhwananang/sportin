@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jumping Platform Runner</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      overflow: hidden;
+      height: 100%;
+      font-family: 'Comic Sans MS', cursive;
+    }
+    canvas {
+      display: block;
+      background: linear-gradient(to top, #87ceeb, #e0f7fa);
+    }
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #fff;
+      font-size: 18px;
+      text-shadow: 2px 2px 4px #000;
+    }
+    #restartBtn {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      padding: 10px 20px;
+      background: #ff4081;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="400"></canvas>
+  <div id="ui">
+    Skor: <span id="score">0</span> | Skor Tertinggi: <span id="highScore">0</span>
+  </div>
+  <button id="restartBtn">Ulangi</button>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const scoreEl = document.getElementById("score");
+    const highScoreEl = document.getElementById("highScore");
+    const restartBtn = document.getElementById("restartBtn");
+
+    let gameSpeed = 3;
+    let gravity = 0.5;
+    let isJumping = false;
+    let jumpPower = 10;
+    let score = 0;
+    let highScore = localStorage.getItem("highScore") || 0;
+    highScoreEl.textContent = highScore;
+
+    let backgroundOffset = 0;
+
+    const player = {
+      x: 50,
+      y: 300,
+      width: 40,
+      height: 40,
+      color: "#ffcc00",
+      dy: 0,
+      grounded: true,
+    };
+
+    const obstacles = [];
+
+    function createObstacle() {
+      const height = 30 + Math.random() * 40;
+      const width = 20 + Math.random() * 30;
+      obstacles.push({
+        x: canvas.width,
+        y: canvas.height - height,
+        width,
+        height,
+        color: "#ff5252"
+      });
+    }
+
+    function drawBackground() {
+      ctx.fillStyle = "#76b852";
+      for (let i = 0; i < canvas.width; i += 40) {
+        ctx.fillRect((i - backgroundOffset % 40), canvas.height - 20, 20, 20);
+      }
+      backgroundOffset += gameSpeed;
+    }
+
+    function drawPlayer() {
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
+
+    function updatePlayer() {
+      player.y += player.dy;
+      if (player.y + player.height < canvas.height) {
+        player.dy += gravity;
+        player.grounded = false;
+      } else {
+        player.y = canvas.height - player.height;
+        player.dy = 0;
+        player.grounded = true;
+      }
+    }
+
+    function drawObstacles() {
+      for (let obs of obstacles) {
+        ctx.fillStyle = obs.color;
+        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+        obs.x -= gameSpeed;
+      }
+    }
+
+    function checkCollision() {
+      for (let obs of obstacles) {
+        if (
+          player.x < obs.x + obs.width &&
+          player.x + player.width > obs.x &&
+          player.y < obs.y + obs.height &&
+          player.y + player.height > obs.y
+        ) {
+          gameOver();
+        }
+      }
+    }
+
+    function gameOver() {
+      cancelAnimationFrame(animationId);
+      restartBtn.style.display = "block";
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("highScore", highScore);
+      }
+    }
+
+    function resetGame() {
+      player.y = 300;
+      player.dy = 0;
+      score = 0;
+      gameSpeed = 3;
+      obstacles.length = 0;
+      backgroundOffset = 0;
+      restartBtn.style.display = "none";
+      animate();
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBackground();
+      drawPlayer();
+      updatePlayer();
+      drawObstacles();
+      checkCollision();
+
+      if (Math.random() < 0.02) {
+        createObstacle();
+      }
+
+      obstacles.forEach((obs, index) => {
+        if (obs.x + obs.width < 0) {
+          obstacles.splice(index, 1);
+          score++;
+          gameSpeed += 0.05;
+        }
+      });
+
+      scoreEl.textContent = score;
+      highScoreEl.textContent = highScore;
+
+      animationId = requestAnimationFrame(animate);
+    }
+
+    let animationId;
+
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && player.grounded) {
+        player.dy = -jumpPower;
+      }
+    });
+
+    restartBtn.addEventListener("click", resetGame);
+
+    animate();
+  </script>
+</body>
+</html>

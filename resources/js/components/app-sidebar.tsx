@@ -15,6 +15,7 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard',
         icon: LayoutGrid,
     },
+
 ];
 
 const footerNavItems: NavItem[] = [
@@ -41,7 +42,15 @@ export function AppSidebar() {
             href: '/dashboard',
             icon: LayoutGrid,
         },
-        // Tambahkan menu Area hanya untuk admin / super_admin
+        {   title: 'Sport',
+                      href: '/sports',
+                      icon: Folder 
+                    },
+    {
+        title: 'Booking',
+        href: '/bookings',
+        icon: Folder,
+    },
         ...(isAdmin
             ? [
                   {
@@ -49,9 +58,12 @@ export function AppSidebar() {
                       href: '/areas',
                       icon: Folder,
                   },
-                  {   title: 'Sport',
-                      href: '/sports',
-                      icon: Folder },
+                  
+                    {
+                        title: 'Users',
+                        href: '/users',
+                        icon: Folder,
+                    },
               ]
             : []),
             
