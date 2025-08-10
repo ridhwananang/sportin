@@ -126,7 +126,7 @@ export default function Create() {
     >
       {areas.map(area => (
         <option key={area.id} value={area.id}>
-          {area.location}
+          {area.location} - {area.address}
         </option>
       ))}
     </select>

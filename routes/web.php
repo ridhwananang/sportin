@@ -5,8 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SportController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\FinanceReportController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -62,6 +64,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bookings/{booking}/payment/create', [PaymentController::class, 'create'])->name('payments.create');
     Route::post('/bookings/{booking}/payment', [PaymentController::class, 'store'])->name('payments.store');
 });
+
+Route::middleware(['auth', 'role:super_admin,admin'])->group(function () {
+    Route::get('/finance', [FinanceReportController::class, 'index'])
+        ->name('finance.index');
+});
+
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

@@ -15,7 +15,7 @@ interface User {
   employee?: {
     area?: {
       location: string;
-    }
+    };
   };
 }
 
@@ -43,41 +43,71 @@ export default function Index() {
 
   return (
     <AppLayout>
-      <div className="p-6">
-        <h1 className="text-xl font-bold mb-4">Daftar User</h1>
-        <Link href={route('users.create')} className="bg-blue-600 text-white px-4 py-2 rounded">
+      <div className="p-6 max-w-7xl mx-auto">
+        <h1 className="text-3xl font-extrabold mb-6 text-gray-900 dark:text-white">
+          Daftar User
+        </h1>
+
+        <Link
+          href={route('users.create')}
+          className="inline-block mb-6 rounded-md bg-blue-600 px-6 py-2 text-white font-semibold shadow-md hover:bg-blue-700 transition"
+        >
           + Tambah User
         </Link>
 
-        <table className="w-full table-auto mt-6 border">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border px-4 py-2">#</th>
-              <th className="border px-4 py-2">Nama</th>
-              <th className="border px-4 py-2">Email</th>
-              <th className="border px-4 py-2">Role</th>
-              <th className="border px-4 py-2">Area</th>
-              <th className="border px-4 py-2">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user, i) => (
-              <tr key={user.id}>
-                <td className="border px-4 py-2 text-center">{i + 1}</td>
-                <td className="border px-4 py-2">{user.name}</td>
-                <td className="border px-4 py-2">{user.email}</td>
-                <td className="border px-4 py-2 capitalize">{user.role}</td>
-                <td className="border px-4 py-2">
-                  {user.employee?.area?.location ?? '-'}
-                </td>
-                <td className="border px-4 py-2 text-center">
-                  <Link href={route('users.edit', user.id)} className="text-blue-500 mr-2">Edit</Link>
-                  <button onClick={() => confirmDelete(user)} className="text-red-600">Hapus</button>
-                </td>
+        <div className="overflow-x-auto rounded-lg border border-gray-300 dark:border-gray-700 shadow-sm">
+          <table className="w-full min-w-[600px] table-auto text-left text-sm text-gray-700 dark:text-gray-300">
+            <thead className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+              <tr>
+                <th className="px-5 py-3">#</th>
+                <th className="px-5 py-3">Nama</th>
+                <th className="px-5 py-3">Email</th>
+                <th className="px-5 py-3">Role</th>
+                <th className="px-5 py-3">Area</th>
+                <th className="px-5 py-3 text-center">Aksi</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="text-center py-6 text-gray-500 dark:text-gray-400"
+                  >
+                    Tidak ada data user.
+                  </td>
+                </tr>
+              )}
+              {users.map((user, i) => (
+                <tr
+                  key={user.id}
+                  className="border-b border-gray-200 dark:border-gray-700 hover:bg-indigo-50 dark:hover:bg-gray-700 transition"
+                >
+                  <td className="px-5 py-3 font-medium">{i + 1}</td>
+                  <td className="px-5 py-3">{user.name}</td>
+                  <td className="px-5 py-3">{user.email}</td>
+                  <td className="px-5 py-3 capitalize">{user.role}</td>
+                  <td className="px-5 py-3">{user.employee?.area?.location ?? '-'}</td>
+                  <td className="px-5 py-3 text-center space-x-4">
+                    <Link
+                      href={route('users.edit', user.id)}
+                      className="text-indigo-600 hover:text-indigo-800 font-semibold transition"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => confirmDelete(user)}
+                      className="text-red-600 hover:text-red-800 font-semibold transition"
+                      aria-label={`Hapus user ${user.name}`}
+                    >
+                      Hapus
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         <ConfirmDeleteModal
           show={showModal}

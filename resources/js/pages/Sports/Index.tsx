@@ -38,11 +38,15 @@ export default function Index() {
     <AppLayout>
       <div className="p-6 max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Daftar Olahraga</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+            Daftar Olahraga
+          </h1>
           {isSuperAdmin && (
             <Link
               href="/sports/create"
-              className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md shadow transition duration-300"
+              className="inline-block bg-blue-600 hover:bg-blue-700 focus:bg-blue-800
+                text-white font-semibold px-5 py-2 rounded-md shadow-md
+                transition duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400"
             >
               + Tambah
             </Link>
@@ -50,38 +54,51 @@ export default function Index() {
         </div>
 
         {sports.length === 0 ? (
-          <div className="text-center text-gray-500 dark:text-gray-400">Belum ada data olahraga.</div>
+          <div className="text-center text-gray-500 dark:text-gray-400 text-lg font-medium">
+            Belum ada data olahraga.
+          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {sports.map((sport) => (
               <Link
                 key={sport.id}
                 href={`/sports/${sport.id}`}
-                className="block bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
+                className="block bg-white dark:bg-gray-800 rounded-xl shadow-md
+                  hover:shadow-lg transition-shadow duration-300 overflow-hidden
+                  focus:outline-none focus:ring-4 focus:ring-indigo-500"
               >
                 {sport.image ? (
-                  <img src={`/storage/${sport.image}`} alt={sport.name} className="w-full h-40 object-cover" />
+                  <img
+                    src={`/storage/${sport.image}`}
+                    alt={sport.name}
+                    className="w-full h-40 object-cover rounded-t-xl"
+                    loading="lazy"
+                  />
                 ) : (
-                  <div className="w-full h-40 flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-gray-400 text-sm">
+                  <div className="w-full h-40 flex items-center justify-center
+                    bg-gray-200 dark:bg-gray-700 text-gray-400 text-sm rounded-t-xl"
+                  >
                     Tidak ada gambar
                   </div>
                 )}
 
                 <div className="p-4 space-y-2">
-                  <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{sport.name}</h2>
-                  <div className="text-sm font-medium text-gray-800 dark:text-white">
+                  <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+                    {sport.name}
+                  </h2>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 min-h-[3rem]">
                     {sport.description || 'Tanpa Deskripsi'}
-                  </div>
+                  </p>
                 </div>
 
-                <div className="p-4 space-y-2">
+                <div className="p-4 space-y-1 border-t border-gray-200 dark:border-gray-700">
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     <span className="font-medium">Tipe:</span> {sport.type === 'team' ? 'Tim' : 'Individu'}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     <span className="font-medium">Harga:</span> Rp{sport.price.toLocaleString()}
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
                     <span className="font-medium">Area:</span>{' '}
                     {sport.areas?.length
                       ? sport.areas.map((a) => a.location).join(', ')
@@ -89,11 +106,11 @@ export default function Index() {
                   </p>
 
                   {isSuperAdmin && (
-                    <div className="pt-3 flex items-center gap-4">
+                    <div className="pt-3 flex items-center gap-6">
                       <Link
                         href={`/sports/${sport.id}/edit`}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline"
+                        className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline focus:underline"
                       >
                         Edit
                       </Link>
@@ -103,7 +120,7 @@ export default function Index() {
                           e.stopPropagation();
                           handleDelete(sport);
                         }}
-                        className="text-red-600 dark:text-red-400 text-sm font-medium hover:underline"
+                        className="text-red-600 dark:text-red-400 text-sm font-medium hover:underline focus:underline"
                       >
                         Hapus
                       </button>

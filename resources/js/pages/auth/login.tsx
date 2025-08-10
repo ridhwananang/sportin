@@ -121,16 +121,14 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                                 {/* Tombol Sign in Google */}
                                 <button
-                                    type="button"
-                                    className="w-full flex items-center text-gray-600 justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition"
-                                >
-                                    <img
-                                        src="/img/google.png"
-                                        alt="Google"
-                                        className="w-5 h-5 mr-2"
-                                    />
-                                    Sign in with Google
-                                </button>
+    type="button"
+    onClick={() => window.location.href = route('google.login')}
+    className="w-full flex items-center text-gray-600 justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition"
+>
+    <img src="/img/google.png" alt="Google" className="w-5 h-5 mr-2" />
+    Sign in with Google
+</button>
+
                             </form>
 
                             {/* Register Link */}

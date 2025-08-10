@@ -12,21 +12,51 @@ export default function Show() {
 
   return (
     <AppLayout>
-      <div className="p-6 max-w-4xl mx-auto space-y-4">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Detail Booking</h1>
-          <Link href="/bookings" className="text-sm text-blue-500 hover:underline">← Kembali</Link>
+      <div className="p-6 max-w-4xl mx-auto space-y-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+            Detail Booking
+          </h1>
+          <Link href="/bookings" className="text-sm text-blue-600 hover:underline dark:text-blue-400">
+            ← Kembali
+          </Link>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6 space-y-3">
-          <p><strong>Kode Booking:</strong> {booking.kode_booking}</p>
-          <p><strong>Nama Customer:</strong> {booking.customer_name}</p>
-          <p><strong>Olahraga:</strong> {booking.sport?.name}</p>
-          <p><strong>Area:</strong> {booking.area?.location}</p>
-          <p><strong>Waktu:</strong> {booking.start_at} – {booking.end_at}</p>
-          <p><strong>Status:</strong> {booking.status}</p>
-          <p><strong>Status Pembayaran:</strong> {booking.payment_status}</p>
-          <p><strong>Dibuat oleh:</strong> {booking.createdBy?.name}</p>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 space-y-4 border border-gray-200 dark:border-gray-700">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-gray-700 dark:text-gray-300">
+            <div>
+              <p className="font-semibold">Kode Booking:</p>
+              <p>{booking.kode_booking}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Nama Customer:</p>
+              <p>{booking.customer_name}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Olahraga:</p>
+              <p>{booking.sport?.name || '-'}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Area:</p>
+              <p>{booking.area?.location || '-'}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Waktu:</p>
+              <p>{booking.start_at} – {booking.end_at}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Status:</p>
+              <p className="capitalize">{booking.status}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Status Pembayaran:</p>
+              <p className="capitalize">{booking.payment_status}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Dibuat oleh:</p>
+              <p>{booking.createdBy?.name || '-'}</p>
+            </div>
+          </div>
         </div>
       </div>
     </AppLayout>

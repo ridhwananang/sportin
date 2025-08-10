@@ -11,10 +11,10 @@ export default function AppLogo() {
             {/* Teks lebih besar */}
             <div className="ml-3 grid flex-1 text-left">
                 <span className="truncate leading-tight font-bold text-lg">
-                    Laravel Starter Kit
+                    SportIn
                 </span>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
-                    React + Inertia
+                    4 Sehat 5 Sempurna
                 </span>
             </div>
         </>
