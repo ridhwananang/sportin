@@ -57,7 +57,7 @@ export default function Index() {
 
         <div className="overflow-x-auto rounded-lg border border-gray-300 dark:border-gray-700 shadow-sm">
           <table className="w-full min-w-[600px] table-auto text-left text-sm text-gray-700 dark:text-gray-300">
-            <thead className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+           <thead className="bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-600 text-white">
               <tr>
                 <th className="px-5 py-3">#</th>
                 <th className="px-5 py-3">Nama</th>
@@ -88,21 +88,48 @@ export default function Index() {
                   <td className="px-5 py-3">{user.email}</td>
                   <td className="px-5 py-3 capitalize">{user.role}</td>
                   <td className="px-5 py-3">{user.employee?.area?.location ?? '-'}</td>
-                  <td className="px-5 py-3 text-center space-x-4">
-                    <Link
-                      href={route('users.edit', user.id)}
-                      className="text-indigo-600 hover:text-indigo-800 font-semibold transition"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => confirmDelete(user)}
-                      className="text-red-600 hover:text-red-800 font-semibold transition"
-                      aria-label={`Hapus user ${user.name}`}
-                    >
-                      Hapus
-                    </button>
-                  </td>
+                  <td className="px-5 py-3 text-center space-x-2">
+  <Link
+    href={route('users.edit', user.id)}
+    className="
+      inline-block
+      px-3
+      py-1
+      rounded-full
+      bg-indigo-100
+      text-indigo-700
+      hover:bg-indigo-200
+      font-semibold
+      transition
+      focus:outline-none
+      focus:ring-2
+      focus:ring-indigo-400
+    "
+  >
+    Edit
+  </Link>
+  <button
+    onClick={() => confirmDelete(user)}
+    className="
+      inline-block
+      px-3
+      py-1
+      rounded-full
+      bg-red-100
+      text-red-700
+      hover:bg-red-200
+      font-semibold
+      transition
+      focus:outline-none
+      focus:ring-2
+      focus:ring-red-400
+    "
+    aria-label={`Hapus user ${user.name}`}
+  >
+    Hapus
+  </button>
+</td>
+
                 </tr>
               ))}
             </tbody>

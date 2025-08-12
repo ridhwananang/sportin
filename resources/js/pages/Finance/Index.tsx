@@ -110,12 +110,28 @@ export default function FinanceIndex() {
   return (
     <AppLayout>
       <div className="p-6 w-full mx-auto space-y-12">
-        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-          Laporan Keuangan
-        </h1>
+        <div
+  className="
+    w-full
+    p-6
+    rounded-xl
+    shadow-lg
+    bg-white
+    dark:bg-gray-800
+    transition-transform
+    duration-200
+    hover:scale-102
+    hover:shadow-2xl
+  "
+>
+  <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+    Laporan dan Grafik
+  </h1>
+</div>
+
 
         {/* Total Keseluruhan */}
-        <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl shadow-2xl p-8 max-w-md mx-auto text-center">
+        <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl shadow-2xl p-8 max-w-lg mx-auto text-center">
           <h2 className="text-2xl font-semibold">Total Keseluruhan</h2>
           <p className="text-5xl font-extrabold mt-3 drop-shadow-lg">
             {formatRupiah(totalKeseluruhan)}

@@ -60,8 +60,19 @@ class SportController extends Controller
     public function show(Sport $sport)
     {
         $sport->load('areas');
+
+        $recommendations = Sport::with('areas')
+            ->where('id', '!=', $sport->id)
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
+
         return Inertia::render('Sports/Show', [
             'sport' => $sport,
+            'recommendations' => $recommendations,
+            'auth' => [
+                'user' => Auth::user(),
+            ]
         ]);
     }
 

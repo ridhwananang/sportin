@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { LayoutGrid, Activity, CalendarCheck, MapPin, Users, FileText } from 'lucide-react';
 import AppLogo from './app-logo';
 import type { PageProps } from '@/types';
 
@@ -42,12 +42,12 @@ export function AppSidebar() {
     {
       title: 'Sport',
       href: '/sports',
-      icon: Folder,
+      icon: Activity,
     },
     {
       title: 'Booking',
       href: '/bookings',
-      icon: Folder,
+      icon: CalendarCheck,
     },
     ...(
       isAdmin
@@ -55,17 +55,17 @@ export function AppSidebar() {
             {
               title: 'Area',
               href: '/areas',
-              icon: Folder,
+              icon: MapPin,
             },
             {
               title: 'Users',
               href: '/users',
-              icon: Folder,
+              icon: Users,
             },
             {
               title: 'Laporan',
               href: '/finance',
-              icon: Folder,
+              icon: FileText,
             },
           ]
         : []

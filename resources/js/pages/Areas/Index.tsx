@@ -69,20 +69,47 @@ const AreaIndex: React.FC = () => {
                     <td className="px-5 py-3">{index + 1}</td>
                     <td className="px-5 py-3">{area.location}</td>
                     <td className="px-5 py-3">{area.address}</td>
-                    <td className="px-5 py-3 space-x-4">
-                      <Link
-                        href={`/areas/${area.id}/edit`}
-                        className="text-indigo-600 hover:underline font-medium"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => openDeleteModal(area)}
-                        className="text-red-600 hover:underline font-medium"
-                      >
-                        Hapus
-                      </button>
-                    </td>
+                    <td className="px-5 py-3 space-x-3 text-center">
+  <Link
+    href={`/areas/${area.id}/edit`}
+    className="
+      inline-block
+      px-3
+      py-1
+      rounded-full
+      bg-indigo-100
+      text-indigo-700
+      hover:bg-indigo-200
+      font-medium
+      transition
+      focus:outline-none
+      focus:ring-2
+      focus:ring-indigo-400
+    "
+  >
+    Edit
+  </Link>
+  <button
+    onClick={() => openDeleteModal(area)}
+    className="
+      inline-block
+      px-3
+      py-1
+      rounded-full
+      bg-red-100
+      text-red-700
+      hover:bg-red-200
+      font-medium
+      transition
+      focus:outline-none
+      focus:ring-2
+      focus:ring-red-400
+    "
+  >
+    Hapus
+  </button>
+</td>
+
                   </tr>
                 ))
               )}

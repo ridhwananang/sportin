@@ -38,7 +38,7 @@ export default function Index() {
 
   return (
     <AppLayout>
-      <div className="p-6 max-w-7xl mx-auto space-y-8">
+      <div className="p-6 w-full mx-auto space-y-8">
         {/* Header + Search */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
@@ -81,7 +81,26 @@ export default function Index() {
                     <strong>Area:</strong> {b.area?.location ?? '-'}
                   </p>
                   <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>Waktu:</strong> {b.start_at} – {b.end_at}
+                    <strong>Tanggal:</strong> {new Date(b.start_at).toLocaleString
+                      ('id-ID', {
+                        dateStyle: 'short',
+                        // timeStyle: 'short',
+                      })} 
+                  </p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    <strong>Waktu awal:</strong>{' '}
+                    {new Date(b.start_at).toLocaleTimeString('id-ID', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })} WIB
+                  </p>
+
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    <strong>Waktu akhir:</strong>{' '}
+                    {new Date(b.end_at).toLocaleTimeString('id-ID', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })} WIB
                   </p>
                   <p className="text-sm text-gray-700 dark:text-gray-300">
                     <strong>Status:</strong>{' '}
@@ -107,23 +126,6 @@ export default function Index() {
                   </button>
                 )}
 
-                {/* Jika mau tombol edit/hapus, bisa diaktifkan lagi */}
-                {/* {userRole !== 'user' && (
-                  <div className="mt-3 flex justify-between text-sm">
-                    <Link
-                      href={`/bookings/${b.id}/edit`}
-                      className="text-yellow-600 hover:underline font-semibold"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(b)}
-                      className="text-red-600 hover:underline font-semibold"
-                    >
-                      Hapus
-                    </button>
-                  </div>
-                )} */}
               </div>
             ))}
           </div>

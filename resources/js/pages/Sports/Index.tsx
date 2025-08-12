@@ -106,25 +106,60 @@ export default function Index() {
                   </p>
 
                   {isSuperAdmin && (
-                    <div className="pt-3 flex items-center gap-6">
-                      <Link
-                        href={`/sports/${sport.id}/edit`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline focus:underline"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleDelete(sport);
-                        }}
-                        className="text-red-600 dark:text-red-400 text-sm font-medium hover:underline focus:underline"
-                      >
-                        Hapus
-                      </button>
-                    </div>
+                    <div className="pt-3 flex items-center gap-4">
+  <Link
+    href={`/sports/${sport.id}/edit`}
+    onClick={(e) => e.stopPropagation()}
+    className="
+      inline-block
+      px-3
+      py-1
+      rounded-full
+      bg-blue-100
+      dark:bg-blue-700
+      text-blue-700
+      dark:text-blue-200
+      text-sm
+      font-medium
+      hover:bg-blue-200
+      dark:hover:bg-blue-600
+      focus:outline-none
+      focus:ring-2
+      focus:ring-blue-400
+      transition
+    "
+  >
+    Edit
+  </Link>
+  <button
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleDelete(sport);
+    }}
+    className="
+      inline-block
+      px-3
+      py-1
+      rounded-full
+      bg-red-100
+      dark:bg-red-700
+      text-red-700
+      dark:text-red-200
+      text-sm
+      font-medium
+      hover:bg-red-200
+      dark:hover:bg-red-600
+      focus:outline-none
+      focus:ring-2
+      focus:ring-red-400
+      transition
+    "
+  >
+    Hapus
+  </button>
+</div>
+
                   )}
                 </div>
               </Link>

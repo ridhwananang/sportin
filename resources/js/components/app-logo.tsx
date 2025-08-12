@@ -4,8 +4,8 @@ export default function AppLogo() {
     return (
         <>
             {/* Logo lebih besar */}
-            <div className="flex aspect-square size-12 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <AppLogoIcon className="size-8 fill-current text-white dark:text-black" />
+            <div className="flex aspect-square size-12 items-center justify-center rounded-lg  text-sidebar-primary-foreground">
+                <AppLogoIcon className="size-14 fill-current text-white dark:text-black" />
             </div>
 
             {/* Teks lebih besar */}
