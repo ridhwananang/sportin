@@ -59,7 +59,7 @@ export interface Sport {
   price: number;
   image: string | null;
   active: boolean;
-  areas: Area[]; // Relasi many-to-many
+  areas: Area[]; 
   created_at: string;
   updated_at: string;
 }
@@ -91,7 +91,6 @@ export interface Booking {
   area_id: number;
   created_at: string;
   updated_at: string;
-
   sport?: Sport;
   area?: Area;
   user?: User;
@@ -101,7 +100,7 @@ export interface Booking {
 export interface Discount {
   id: number;
   name: string;
-  percentage: number; // persentase diskon, misalnya 10 untuk 10%
+  percentage: number; 
   created_at: string;
   updated_at: string;
 }

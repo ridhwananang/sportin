@@ -28,7 +28,7 @@ class AreaController extends Controller
     {
         $validated = $request->validate([
             'location' => 'required|string|max:255',
-            'address' => 'required|string',
+            'address' => 'required|string|max:255',
         ]);
 
         Area::create($validated);
