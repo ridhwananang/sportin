@@ -5,7 +5,7 @@ import { FaEnvelope, FaPhone, FaLinkedin, FaXTwitter, FaInstagram, FaFacebook } 
 export default function Welcome() {
     return (
         <>
-            <Head title="SportIn Landing" />
+            <Head/>
             <div
                 className="relative min-h-screen flex flex-col bg-cover bg-center"
                 style={{ backgroundImage: "url('/img/stadium.jpg')" }}

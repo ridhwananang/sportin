@@ -33,7 +33,13 @@ export default function Create() {
           Pembayaran Booking
         </h1>
         <div className="mb-8 text-gray-700 dark:text-gray-300 space-y-2 text-base leading-relaxed">
-          <p><strong>Kode Booking:</strong> <span className="font-mono text-indigo-600">{booking.kode_booking}</span></p>
+          <p>
+  <strong>Kode Booking:</strong>{' '}
+  <span className="inline-block px-3 py-1 font-bold rounded-full font-mono text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow">
+    {booking.kode_booking}
+  </span>
+</p>
+
           <p><strong>Nama:</strong> {booking.customer_name}</p>
           <p><strong>Olahraga:</strong> {booking.sport?.name || '-'}</p>
           <p><strong>Harga:</strong> <span className="text-green-600 font-semibold">Rp{booking.sport?.price?.toLocaleString() || '0'}</span></p>

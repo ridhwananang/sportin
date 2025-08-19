@@ -37,7 +37,23 @@ interface ReportPerArea {
 interface RekapOlahraga {
   total: number;
   sport_name: string;
+  address_name: string; // Assuming this is the address field
   area_name: string;
+  price: number;
+}
+
+
+interface ReportPerPpn {
+  total: number;
+}
+
+interface RekapOlahragaPerhari {
+  total: number;
+  tanggal: string;
+  sport_name: string;
+  area_name: string;
+  address_name: string; // Assuming this is the address field
+  price: number;
 }
 
 interface Props extends PageProps {
@@ -47,10 +63,12 @@ interface Props extends PageProps {
   perArea: ReportPerArea[];
   totalKeseluruhan: number;
   rekapOlahraga: RekapOlahraga[];
+  totalPpn: number;
+  rekapOlahragaPerhari: RekapOlahragaPerhari[];
 }
 
 export default function FinanceIndex() {
-  const { perHari, perBulan, perSport, perArea, totalKeseluruhan, rekapOlahraga } =
+  const { perHari, perBulan, perSport, perArea, totalKeseluruhan, rekapOlahraga, totalPpn, rekapOlahragaPerhari } =
     usePage<Props>().props;
 
   const formatRupiah = (num: number) =>
@@ -256,6 +274,12 @@ export default function FinanceIndex() {
                   <th className="px-4 py-3 border-t border-gray-200 dark:border-gray-700">
                     Area
                   </th>
+                  <th className="px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+                    Alamat
+                  </th>
+                  <th className="px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+                    Income
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -283,6 +307,12 @@ export default function FinanceIndex() {
                       <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
                         {r.area_name}
                       </td>
+                      <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
+                        {r.address_name} {/* Assuming area_name is the address */}
+                      </td>
+                      <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
+                        {formatRupiah(r.price)} {/* Assuming price is the field for price */}
+                      </td>
                     </tr>
                   ))
                 )}
@@ -290,6 +320,84 @@ export default function FinanceIndex() {
             </table>
           </div>
         </div>
+        {/* Rekap Olahraga Per Hari */}
+<div className={sectionStyle}>
+  <h2 className="text-lg font-semibold text-gray-800 dark:text-white px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white">
+    Rekap Olahraga Per Hari
+  </h2>
+  <div className="overflow-x-auto">
+    <table className="w-full text-sm border-collapse">
+      <thead>
+        <tr>
+          <th className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 text-center">Tanggal</th>
+          <th className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 text-center">Total</th>
+          <th className="px-4 py-3 border-t border-gray-200 dark:border-gray-700">Olahraga</th>
+          <th className="px-4 py-3 border-t border-gray-200 dark:border-gray-700">Area</th>
+          <th className="px-4 py-3 border-t border-gray-200 dark:border-gray-700">Alamat</th>
+          <th className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 text-right">Income</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rekapOlahragaPerhari.length === 0 ? (
+          <tr>
+            <td colSpan={6} className="text-center py-4 text-gray-500 dark:text-gray-400">
+              Tidak ada data
+            </td>
+          </tr>
+        ) : (
+          rekapOlahragaPerhari.map((r, i) => (
+            <tr key={i} className="hover:bg-indigo-50 dark:hover:bg-gray-700 transition-colors duration-200">
+              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-center font-medium">
+                {r.tanggal}
+              </td>
+              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-center font-medium">
+                {r.total}
+              </td>
+              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700">{r.sport_name}</td>
+              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700">{r.area_name}</td>
+              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700">{r.address_name}</td>
+              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-right">
+                {formatRupiah(r.price)}
+              </td>
+            </tr>
+          ))
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
+        {/* Total PPN Section */}
+<div className={sectionStyle}>
+  <h2 className="text-lg font-semibold text-gray-800 dark:text-white px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white">
+    Total PPN (11%)
+  </h2>
+  <div className="overflow-x-auto">
+    <table className="w-full text-sm border-collapse">
+      <thead>
+        <tr>
+          <th className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 text-left">
+            Keterangan
+          </th>
+          <th className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 text-right">
+            Total
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium">
+            PPN 11% dari seluruh booking
+          </td>
+          <td className="px-4 py-2 text-right border-t border-gray-200 dark:border-gray-700 font-semibold text-gray-900 dark:text-gray-100">
+            {formatRupiah(totalPpn)}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
       </div>
     </AppLayout>
   );

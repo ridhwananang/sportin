@@ -21,4 +21,8 @@ class Sport extends Model
             ->withPivot('active')
             ->withTimestamps();
     }
+    public function images()
+    {
+        return $this->hasMany(SportImage::class);
+    }
 }

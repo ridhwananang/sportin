@@ -10,23 +10,26 @@ interface Props extends PageProps {
 export default function Create() {
   const { areas } = usePage<Props>().props;
 
-  const { data, setData, post, processing, errors } = useForm<{
-    name: string;
-    type: 'team' | 'individual';
-    description: string;
-    price: number;
-    image: File | null;
-    active: boolean;
-    area_ids: number[];
-  }>({
-    name: '',
-    type: 'team',
-    description: '',
-    price: 0,
-    image: null,
-    active: true,
-    area_ids: [],
-  });
+const { data, setData, post, processing, errors } = useForm<{
+  name: string;
+  type: 'team' | 'individual';
+  description: string;
+  price: number;
+  image: File | null;
+  images: File[];
+  active: boolean;
+  area_ids: number[];
+}>({
+  name: '',
+  type: 'team',
+  description: '',
+  price: 0,
+  image: null,
+  images: [],
+  active: true,
+  area_ids: [],
+});
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,52 +44,67 @@ export default function Create() {
             Tambah Olahraga
           </h1>
 
-         <form
+      <form
   onSubmit={handleSubmit}
   encType="multipart/form-data"
   className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-xl max-w-2xl mx-auto space-y-6"
 >
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* Nama */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama</label>
+      <input
+        type="text"
+        value={data.name}
+        onChange={e => setData('name', e.target.value)}
+        placeholder="Masukkan nama olahraga"
+        className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm placeholder:text-gray-400 dark:placeholder:text-gray-500"
+      />
+      {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+    </div>
 
-  {/* Nama */}
-  <div>
-    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama</label>
-    <input
-      type="text"
-      value={data.name}
-      onChange={e => setData('name', e.target.value)}
-      placeholder="Masukkan nama olahraga"
-      className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm placeholder:text-gray-400 dark:placeholder:text-gray-500"
-    />
-    {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+    {/* Tipe */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipe</label>
+      <select
+        value={data.type}
+        onChange={e => setData('type', e.target.value as 'team' | 'individual')}
+        className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+      >
+        <option value="team">Tim</option>
+        <option value="individual">Individu</option>
+      </select>
+      {errors.type && <p className="text-sm text-red-500 mt-1">{errors.type}</p>}
+    </div>
+
+    {/* Harga */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Harga</label>
+      <input
+        type="number"
+        value={data.price}
+        onChange={e => setData('price', Number(e.target.value))}
+        className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+      />
+      {errors.price && <p className="text-sm text-red-500 mt-1">{errors.price}</p>}
+    </div>
+
+    {/* Status */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+      <select
+        value={String(data.active)}
+        onChange={e => setData('active', e.target.value === 'true')}
+        className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+      >
+        <option value="true">Aktif</option>
+        <option value="false">Tidak Aktif</option>
+      </select>
+      {errors.active && <p className="text-sm text-red-500 mt-1">{errors.active}</p>}
+    </div>
   </div>
 
-  {/* Tipe */}
-  <div>
-    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipe</label>
-    <select
-      value={data.type}
-      onChange={e => setData('type', e.target.value as 'team' | 'individual')}
-      className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-    >
-      <option value="team">Tim</option>
-      <option value="individual">Individu</option>
-    </select>
-    {errors.type && <p className="text-sm text-red-500 mt-1">{errors.type}</p>}
-  </div>
-
-  {/* Harga */}
-  <div>
-    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Harga</label>
-    <input
-      type="number"
-      value={data.price}
-      onChange={e => setData('price', Number(e.target.value))}
-      className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-    />
-    {errors.price && <p className="text-sm text-red-500 mt-1">{errors.price}</p>}
-  </div>
-
-  {/* Deskripsi */}
+  {/* Deskripsi (full width) */}
   <div>
     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Deskripsi</label>
     <textarea
@@ -108,6 +126,25 @@ export default function Create() {
       className="w-full file:bg-blue-100 file:text-blue-700 dark:file:bg-gray-700 dark:file:text-white file:px-4 file:py-2 file:rounded-xl file:border-0 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-sm"
     />
     {errors.image && <p className="text-sm text-red-500 mt-1">{errors.image}</p>}
+  </div>
+
+  {/* Gambar Tambahan */}
+  <div>
+    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+      Gambar Tambahan (bisa pilih lebih dari satu)
+    </label>
+    <input
+      type="file"
+      name="images[]"
+      multiple
+      accept="image/*"
+      onChange={e => setData('images', Array.from(e.target.files || []))}
+      className="w-full file:bg-blue-100 file:text-blue-700 dark:file:bg-gray-700 dark:file:text-white file:px-4 file:py-2 file:rounded-xl file:border-0 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-sm"
+    />
+    <p className="text-xs text-gray-500 mt-1">
+      Kamu bisa memilih beberapa gambar sekaligus.
+    </p>
+    {errors.images && <p className="text-sm text-red-500 mt-1">{errors.images}</p>}
   </div>
 
   {/* Area */}
@@ -133,20 +170,6 @@ export default function Create() {
     {errors.area_ids && <p className="text-sm text-red-500 mt-1">{errors.area_ids}</p>}
   </div>
 
-  {/* Status */}
-  <div>
-    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
-    <select
-      value={String(data.active)}
-      onChange={e => setData('active', e.target.value === 'true')}
-      className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-    >
-      <option value="true">Aktif</option>
-      <option value="false">Tidak Aktif</option>
-    </select>
-    {errors.active && <p className="text-sm text-red-500 mt-1">{errors.active}</p>}
-  </div>
-
   {/* Submit */}
   <div className="pt-4">
     <button
@@ -158,6 +181,7 @@ export default function Create() {
     </button>
   </div>
 </form>
+
 
 
         </div>

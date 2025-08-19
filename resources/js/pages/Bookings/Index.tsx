@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm, usePage, router, Link } from '@inertiajs/react';
+import { usePage, router, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal';
 import type { PageProps, Booking } from '@/types';
@@ -35,6 +35,27 @@ export default function Index() {
   const filteredBookings = bookings.filter((b) =>
     b.kode_booking.toLowerCase().includes(search.toLowerCase())
   );
+
+  // helper buat format tanggal & jam
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('id-ID', { dateStyle: 'short' });
+  };
+
+  const formatTime = (dateStr: string) => {
+    let date = new Date(dateStr);
+
+    // kalau jam = 00:00 tapi end_at aslinya '24:00:00', kasih label "24:00"
+    const raw = dateStr.split(' ')[1]?.substring(0, 5); // "HH:MM"
+    if (raw === '00:00' && date.getHours() === 0) {
+      return '24:00';
+    }
+
+    return date.toLocaleTimeString('id-ID', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   return (
     <AppLayout>
@@ -81,26 +102,17 @@ export default function Index() {
                     <strong>Area:</strong> {b.area?.location ?? '-'}
                   </p>
                   <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>Tanggal:</strong> {new Date(b.start_at).toLocaleString
-                      ('id-ID', {
-                        dateStyle: 'short',
-                        // timeStyle: 'short',
-                      })} 
+                    <strong>Tanggal:</strong> {formatDate(b.start_at)}
                   </p>
                   <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>Waktu awal:</strong>{' '}
-                    {new Date(b.start_at).toLocaleTimeString('id-ID', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })} WIB
+                    <strong>Waktu awal:</strong> {formatTime(b.start_at)} WIB
                   </p>
-
                   <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>Waktu akhir:</strong>{' '}
-                    {new Date(b.end_at).toLocaleTimeString('id-ID', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })} WIB
+                    <strong>Waktu akhir:</strong> {formatTime(b.end_at)} WIB
+                  </p>
+                  
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    <strong>Harga:</strong> Rp{b.sport?.price?.toLocaleString() ?? '0'}
                   </p>
                   <p className="text-sm text-gray-700 dark:text-gray-300">
                     <strong>Status:</strong>{' '}
@@ -125,7 +137,6 @@ export default function Index() {
                     ✅ Sudah Dibayar
                   </button>
                 )}
-
               </div>
             ))}
           </div>

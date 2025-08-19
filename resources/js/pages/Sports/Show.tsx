@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { usePage, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { PageProps, Sport } from '@/types';
+import type { PageProps, Sport } from '@/types';
 
 interface Props extends PageProps {
   sport: Sport;
@@ -9,12 +9,30 @@ interface Props extends PageProps {
 }
 
 export default function Show() {
-  const { sport, auth, recommendations = [] } = usePage<Props>().props;
+  const { sport, recommendations = [], auth } = usePage<Props>().props;
+
+  // Pastikan images selalu array
+  const images = sport.images ?? [];
+
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalImage, setModalImage] = useState<string | null>(null);
+
+  const openModal = (img: string) => {
+    setModalImage(img);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setModalImage(null);
+  };
 
   return (
     <AppLayout>
-      <div className="p-3 max-w-7xl mx-auto">
+      <div className="p-3 w-full mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+
           {/* Detail Sport 65% */}
           <div className="md:col-span-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
@@ -22,15 +40,16 @@ export default function Show() {
                 {sport.name}
               </h1>
               <Link
-  href="/sports"
-  className="inline-block bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md hover:brightness-110 transition duration-300"
->
-  ← Kembali
-</Link>
-
+                href="/sports"
+                className="inline-block bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md hover:brightness-110 transition duration-300"
+              >
+                ← Kembali
+              </Link>
             </div>
 
             <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 transition-shadow hover:shadow-3xl">
+
+              {/* Main image */}
               {sport.image ? (
                 <img
                   src={`/storage/${sport.image}`}
@@ -45,6 +64,28 @@ export default function Show() {
                 </div>
               )}
 
+              {/* Gallery images */}
+              {images.length > 0 && (
+                <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {images.map((img, idx) => {
+                    const imgSrc = typeof img === 'string' ? img : img.image;
+                    return (
+                      <div
+                        key={idx}
+                        className="cursor-pointer overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300"
+                        onClick={() => openModal(`/storage/${imgSrc}`)}
+                      >
+                        <img
+                          src={`/storage/${imgSrc}`}
+                          alt={`Gallery ${idx + 1}`}
+                          className="w-full h-40 object-cover transform hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
               <div className="p-6 space-y-4 text-gray-900 dark:text-gray-200">
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md p-4 transition-colors duration-300">
                   <p className="text-lg text-gray-800 dark:text-gray-200">
@@ -53,7 +94,7 @@ export default function Show() {
                   </p>
                 </div>
 
-                <p className="text-lg">
+                {/* <p className="text-lg">
                   <strong className="font-semibold">Tipe:</strong>{' '}
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
@@ -64,7 +105,7 @@ export default function Show() {
                   >
                     {sport.type === 'team' ? 'Tim' : 'Individu'}
                   </span>
-                </p>
+                </p> */}
 
                 <p className="text-lg">
                   <strong className="font-semibold">Harga:</strong>{' '}
@@ -95,28 +136,26 @@ export default function Show() {
                     </span>
                   )}
                 </p>
-
-                <div>
-                  {auth.user ? (
-                    <Link
-                      href={route('bookings.create', sport.id)}
-                      className="inline-block mt-6 px-8 py-3 bg-green-600 text-white rounded-full shadow-lg
-                        hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-offset-2
-                        transition duration-300 active:scale-95"
-                    >
-                      Booking Sekarang
-                    </Link>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <strong>Alamat:</strong>{' '}
+                  {sport.areas?.length > 0 ? (
+                    sport.areas.map((area) => (
+                      <span key={area.id} className="block">
+                        {area.address}
+                      </span>
+                    ))
                   ) : (
-                    <Link
-                      href="/login"
-                      className="inline-block mt-6 px-8 py-3 bg-gray-500 text-white rounded-full shadow-lg
-                        hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-400 focus:ring-offset-2
-                        transition duration-300 active:scale-95"
-                    >
-                      Login untuk Booking
-                    </Link>
+                    <span className="italic">Belum diatur</span>
                   )}
-                </div>
+                </p>
+                <div className="mt-4">
+  <Link
+    href={route('bookings.create', { sport: sport.id })}
+    className="inline-block px-5 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold shadow-md hover:brightness-110 transition"
+  >
+    Booking Sekarang
+  </Link>
+</div>
               </div>
             </div>
           </div>
@@ -154,16 +193,43 @@ export default function Show() {
                       {rec.description || 'Tanpa deskripsi'}
                     </p>
                     <p className="inline-block bg-red-100 dark:bg-red-700 text-red-800 dark:text-red-100 text-xs font-semibold px-2 py-1 rounded-full shadow">
-  Rp{rec.price.toLocaleString()}
-</p>
-
+                      Rp{rec.price.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {rec.areas?.length > 0
+                        ? rec.areas.map((area) => area.location).join(', ')
+                        : 'Belum diatur'}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {rec.areas?.length > 0
+                        ? rec.areas.map((area) => area.address).join(', ')
+                        : 'Belum diatur'}
+                    </p>
                   </div>
                 </Link>
               ))}
             </div>
           </div>
+
         </div>
       </div>
+
+      {/* Modal */}
+      {modalOpen && modalImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
+          onClick={closeModal}
+        >
+          <div className="max-w-3xl w-full p-4">
+            <img
+              src={modalImage}
+              alt="Preview"
+              className="w-full h-auto rounded-xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()} // supaya klik di image tidak menutup modal
+            />
+          </div>
+        </div>
+      )}
     </AppLayout>
   );
 }

@@ -63,18 +63,47 @@ class FinanceReportController extends Controller
             ->select(
                 'sports.name as sport_name',
                 'areas.location as area_name',
+                'areas.address as address_name',
+                'sports.price as price',
                 DB::raw('COUNT(bookings.id) as total')
             )
-            ->groupBy('sports.name', 'areas.location')
+            ->groupBy('sports.name', 'areas.location', 'areas.address', 'sports.price')
             ->orderBy('sport_name')
             ->get();
+
+        $ppnRate = 0.11;
+
+        $totalPpn = DB::table('bookings')
+            ->join('sports', 'bookings.sport_id', '=', 'sports.id')
+            ->where('payment_status', 'paid') // hanya yang sudah dibayar
+            ->sum(DB::raw('sports.price * ' . $ppnRate));
+
+        $rekapOlahragaPerhari = DB::table('bookings')
+            ->join('sports', 'bookings.sport_id', '=', 'sports.id')
+            ->join('areas', 'bookings.area_id', '=', 'areas.id')
+            ->select(
+                DB::raw('DATE(bookings.created_at) as tanggal'), // tanggal booking
+                'sports.name as sport_name',
+                'areas.location as area_name',
+                'areas.address as address_name',
+                DB::raw('SUM(sports.price) as price'), // total harga per hari
+                DB::raw('COUNT(bookings.id) as total'), // total booking
+                DB::raw('SUM(sports.price) as total_income') // total income per hari
+            )
+            ->groupBy('tanggal', 'sports.name', 'areas.location', 'areas.address') // group by tanggal juga
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+
         return Inertia::render('Finance/Index', [
             'perHari' => $perHari,
             'perBulan' => $perBulan,
             'perSport' => $perSport,
             'perArea' => $perArea,
-            'rekapOlahraga' => $rekapOlahraga,
             'totalKeseluruhan' => $totalKeseluruhan,
+            'rekapOlahraga' => $rekapOlahraga,
+            'totalPpn' => $totalPpn,
+            'rekapOlahragaPerhari' => $rekapOlahragaPerhari,
         ]);
     }
 

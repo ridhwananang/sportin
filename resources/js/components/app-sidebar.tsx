@@ -31,7 +31,8 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
   const { auth } = usePage<PageProps>().props;
-  const isAdmin = auth.user?.role === 'admin' || auth.user?.role === 'super_admin';
+  const isAdmin = auth.user?.role === 'admin' ;
+  const isSuperAdmin = auth.user?.role === 'super_admin';
 
   const mainNavItems: NavItem[] = [
     {
@@ -57,12 +58,26 @@ export function AppSidebar() {
               href: '/areas',
               icon: MapPin,
             },
-            {
+           
+          ]
+        : []
+    ),
+    ...(
+      isSuperAdmin
+        ? [
+           {
+              title: 'Area',
+              href: '/areas',
+              icon: MapPin,
+            },
+             {
               title: 'Users',
               href: '/users',
               icon: Users,
             },
-            {
+           
+           
+             {
               title: 'Laporan',
               href: '/finance',
               icon: FileText,
