@@ -52,31 +52,32 @@ class BookingController extends Controller
     public function store(Request $request, Sport $sport)
     {
         $validated = $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'area_id'       => 'required|exists:areas,id',
-            'date'          => 'required|date|after_or_equal:today',
-            'time_slot'     => 'required|string',
+            'date'      => 'required|date|after_or_equal:today',
+            'time_slot' => 'required|string',
         ]);
 
-        // Pecah time_slot jadi start & end
         [$start, $end] = explode('-', $validated['time_slot']);
         $start = trim($start);
-        $end = trim($end);
+        $end   = trim($end);
 
         try {
             $startAt = Carbon::parse($validated['date'] . ' ' . $start)->format('Y-m-d H:i:s');
-
-            if ($end === '24' || $end === '24:00') {
-                $endAt = Carbon::parse($validated['date'] . ' +1 day 00:00')->format('Y-m-d H:i:s');
-            } else {
-                $endAt = Carbon::parse($validated['date'] . ' ' . $end)->format('Y-m-d H:i:s');
-            }
+            $endAt   = ($end === '24' || $end === '24:00')
+                ? Carbon::parse($validated['date'] . ' +1 day 00:00')->format('Y-m-d H:i:s')
+                : Carbon::parse($validated['date'] . ' ' . $end)->format('Y-m-d H:i:s');
         } catch (\Exception $e) {
             return back()->withErrors(['time_slot' => 'Format waktu tidak valid'])->withInput();
         }
 
-        // Cek overlap booking
-        $overlap = Booking::where('area_id', $validated['area_id'])
+        // ambil area_id langsung dari sport
+        $area = $sport->areas()->first();
+
+        if (!$area) {
+            return back()->withErrors(['area_id' => 'Sport ini belum punya area!']);
+        }
+
+        // cek overlap booking
+        $overlap = Booking::where('area_id', $area->id)
             ->where(function ($query) use ($startAt, $endAt) {
                 $query->whereBetween('start_at', [$startAt, $endAt])
                     ->orWhereBetween('end_at', [$startAt, $endAt])
@@ -88,19 +89,19 @@ class BookingController extends Controller
             ->exists();
 
         if ($overlap) {
-            return back()
-                ->withErrors(['start_at' => 'Waktu booking bertabrakan dengan jadwal lain.'])
-                ->withInput();
+            return back()->withErrors([
+                'start_at' => 'Waktu booking bertabrakan dengan jadwal lain.'
+            ])->withInput();
         }
 
-        // Generate kode unik booking
+
+        // generate kode unik
         do {
             $kode = strtoupper(Str::random(3)) . random_int(10000, 99999);
         } while (Booking::where('kode_booking', $kode)->exists());
 
-        // Simpan booking
         Booking::create([
-            'customer_name'  => $validated['customer_name'],
+            'customer_name'  => Auth::user()->name,
             'kode_booking'   => $kode,
             'status'         => 'pending',
             'payment_status' => 'unpaid',
@@ -109,13 +110,16 @@ class BookingController extends Controller
             'created_by'     => Auth::id(),
             'user_id'        => Auth::id(),
             'sport_id'       => $sport->id,
-            'area_id'        => $validated['area_id'],
+            'area_id'        => $area->id, // ✅ fix di sini
         ]);
 
         return redirect()
             ->route('bookings.index')
             ->with('success', 'Booking berhasil dibuat!');
     }
+
+
+
     /**
      * Display the specified resource.
      */

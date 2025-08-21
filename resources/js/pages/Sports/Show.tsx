@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { usePage, Link } from '@inertiajs/react';
+import { router, usePage, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { PageProps, Sport } from '@/types';
+import type { PageProps, Sport, Area, User } from '@/types';
 import { FaStar, FaRestroom, FaToilet, FaUtensils, FaCrown, FaChair } from "react-icons/fa";
 
 interface Props extends PageProps {
   sport: Sport;
   recommendations: Sport[];
+   areas: Area[];
+  user: User;
 }
 
 export default function Show() {
-  const { sport, auth, recommendations = [] } = usePage<Props>().props;
+const { sport, auth, areas, errors, recommendations = [] } = usePage<Props>().props;
 
   // --- Gallery (statis dulu) ---
   const images = sport.images ?? [];
@@ -29,6 +31,46 @@ export default function Show() {
       setModalImage(null);
     };
 
+    const generateTimeSlots = () => {
+    const slots = [];
+    for (let hour = 9; hour < 24; hour++) {
+      const start = hour.toString().padStart(2, "0") + ":00";
+      const end = (hour + 1).toString().padStart(2, "0") + ":00";
+      slots.push({ start, end, label: `${start} - ${end}` });
+    }
+    return slots;
+  };
+
+   const [form, setForm] = useState({
+  customer_name: auth?.user?.name || '',
+  area_id: '',
+  date: '',
+  start_at: '',
+  end_at: '',
+});
+  
+    const timeSlots = generateTimeSlots();
+  
+    const handleChange = (
+      e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+      setForm({ ...form, [e.target.name]: e.target.value });
+    };
+  
+   const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    const time_slot =
+      form.start_at && form.end_at ? `${form.start_at}-${form.end_at}` : '';
+  
+    router.post(`/sports/${sport.id}/bookings`, {
+      customer_name: form.customer_name,
+      area_id: form.area_id,
+      date: form.date,
+      time_slot,
+    });
+  };
+  
   return (
     <AppLayout>
       <div className="p-3 max-w-7xl mx-auto">
@@ -146,39 +188,68 @@ export default function Show() {
             </div>
 
             {/* Form Booking */}
+            <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
-                type="date"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              />
-              <input
-                type="time"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              />
+              type="date"
+              id="date"
+              name="date"
+              value={form.date}
+              onChange={handleChange}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm
+                focus:outline-none focus:ring-2 focus:ring-indigo-500
+                dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+            />
+            {errors.date && (
+              <p className="mt-1 text-sm text-red-500">{errors.date}</p>
+            )}
+              <select
+              id="time_slot"
+              name="time_slot"
+              value={form.start_at ? `${form.start_at}-${form.end_at}` : ""}
+              onChange={(e) => {
+                const [start, end] = e.target.value.split("-");
+                setForm({ ...form, start_at: start, end_at: end });
+              }}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm
+                focus:outline-none focus:ring-2 focus:ring-indigo-500
+                dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+            >
+              <option value="">-- Pilih Jam --</option>
+              {timeSlots.map((slot, i) => (
+                <option key={i} value={`${slot.start}-${slot.end}`}>
+                  {slot.label}
+                </option>
+              ))}
+            </select>
+            {(errors.start_at || errors.end_at) && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.start_at || errors.end_at}
+              </p>
+            )}
             </div>
 
                 <div className="mt-6 flex justify-end pr-4">
         {auth.user ? (
-          <Link
-            href={route('bookings.create', sport.id)}
-            className="inline-block px-10 py-3.5 rounded-full 
-              bg-gray-600 text-white font-semibold shadow-md text-center
-              transition duration-300 hover:bg-gray-700 active:scale-95"
+          <button
+            type="submit"
+            className="w-full py-3 px-4 bg-green-600 text-white font-semibold rounded-md shadow-md
+              hover:bg-green-700 transition focus:outline-none focus:ring-2 focus:ring-green-500"
           >
-            BOOKING
-          </Link>
+            Booking Sekarang
+          </button>
         ) : (
-          <Link
-            href="/login"
-            className="inline-block px-10 py-3.5 rounded-full 
-              bg-gray-500 text-white font-semibold shadow-md text-center
-              transition duration-300 hover:bg-gray-600 active:scale-95"
-          >
-            Login untuk Booking
-          </Link>
-        )}
-</div>
-
+              <Link
+                href="/login"
+                className="inline-block px-10 py-3.5 rounded-full 
+                  bg-gray-500 text-white font-semibold shadow-md text-center
+                  transition duration-300 hover:bg-gray-600 active:scale-95"
+              >
+                Login untuk Booking
+              </Link>
+            )}
+            </div>
+</form>
           </div>
         </div>
       </div>
