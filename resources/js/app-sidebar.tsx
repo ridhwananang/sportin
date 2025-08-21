@@ -1,0 +1,99 @@
+import { NavFooter } from '@/components/nav-footer';
+import { NavMain } from '@/components/nav-main';
+import { NavUser } from '@/components/nav-user';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from '@/components/ui/sidebar';
+import { type NavItem } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
+import { LayoutGrid, Activity, CalendarCheck, MapPin, Users, FileText } from 'lucide-react';
+import AppLogo from './app-logo';
+import type { PageProps } from '@/types';
+
+const footerNavItems: NavItem[] = [
+  // {
+  //   title: 'Repository',
+  //   href: 'https://github.com/laravel/react-starter-kit',
+  //   icon: Folder,
+  // },
+  // {
+  //   title: 'Documentation',
+  //   href: 'https://laravel.com/docs/starter-kits#react',
+  //   icon: BookOpen,
+  // },
+];
+
+export function AppSidebar() {
+  const { auth } = usePage<PageProps>().props;
+  const isAdmin = auth.user?.role === 'admin' || auth.user?.role === 'super_admin';
+
+  const mainNavItems: NavItem[] = [
+    {
+      title: 'Sewa lapangan',
+      href: '/dashboard',
+      icon: LayoutGrid,
+    },
+    {
+      title: 'Sport',
+      href: '/sports',
+      icon: Activity,
+    },
+    {
+      title: 'Booking',
+      href: '/bookings',
+      icon: CalendarCheck,
+    },
+    ...(
+      isAdmin
+        ? [
+            {
+              title: 'Area',
+              href: '/areas',
+              icon: MapPin,
+            },
+            {
+              title: 'Users',
+              href: '/users',
+              icon: Users,
+            },
+            {
+              title: 'Laporan',
+              href: '/finance',
+              icon: FileText,
+            },
+          ]
+        : []
+    ),
+  ];
+
+  return (
+    <Sidebar collapsible="icon" variant="floating" className="dark:bg-gray-900">
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <Link href="/dashboard" prefetch>
+                <AppLogo />
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <NavMain items={mainNavItems} />
+      </SidebarContent>
+
+      <SidebarFooter className="mt-auto">
+        <NavFooter items={footerNavItems} />
+        <NavUser />
+      </SidebarFooter>
+    </Sidebar>
+  );
+}

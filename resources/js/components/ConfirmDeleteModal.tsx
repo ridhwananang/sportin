@@ -8,7 +8,8 @@ interface ConfirmDeleteModalProps {
   itemName: string;
 }
 
-export default function ConfirmDeleteModal({ show, onClose, onConfirm, itemName }: ConfirmDeleteModalProps) {
+export default function ConfirmDeleteModal({ show, onClose, onConfirm, itemName }:
+   ConfirmDeleteModalProps) {
   if (!show) return null;
 
   return (

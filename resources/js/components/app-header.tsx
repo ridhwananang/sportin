@@ -17,7 +17,7 @@ import AppLogoIcon from './app-logo-icon';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'yahahahh',
+        title: 'Sewa Lapangan',
         href: '/dashboard',
         icon: LayoutGrid,
     },

@@ -58,7 +58,8 @@ const { data, setData, post, processing, errors } = useForm<{
         value={data.name}
         onChange={e => setData('name', e.target.value)}
         placeholder="Masukkan nama olahraga"
-        className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm placeholder:text-gray-400 dark:placeholder:text-gray-500"
+        className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2
+         focus:ring-blue-500 shadow-sm placeholder:text-gray-400 dark:placeholder:text-gray-500"
       />
       {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
     </div>
@@ -69,7 +70,8 @@ const { data, setData, post, processing, errors } = useForm<{
       <select
         value={data.type}
         onChange={e => setData('type', e.target.value as 'team' | 'individual')}
-        className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+        className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2
+         focus:ring-blue-500 shadow-sm"
       >
         <option value="team">Tim</option>
         <option value="individual">Individu</option>
@@ -84,7 +86,8 @@ const { data, setData, post, processing, errors } = useForm<{
         type="number"
         value={data.price}
         onChange={e => setData('price', Number(e.target.value))}
-        className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+        className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 
+        focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
       />
       {errors.price && <p className="text-sm text-red-500 mt-1">{errors.price}</p>}
     </div>
@@ -110,7 +113,8 @@ const { data, setData, post, processing, errors } = useForm<{
     <textarea
       value={data.description}
       onChange={e => setData('description', e.target.value)}
-      className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 h-28 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+      className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 h-28
+       resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
       placeholder="Tuliskan deskripsi olahraga..."
     />
     {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
@@ -123,7 +127,8 @@ const { data, setData, post, processing, errors } = useForm<{
       type="file"
       accept="image/*"
       onChange={e => setData('image', e.target.files?.[0] || null)}
-      className="w-full file:bg-blue-100 file:text-blue-700 dark:file:bg-gray-700 dark:file:text-white file:px-4 file:py-2 file:rounded-xl file:border-0 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-sm"
+      className="w-full file:bg-blue-100 file:text-blue-700 dark:file:bg-gray-700 dark:file:text-white file:px-4 file:py-2 
+      file:rounded-xl file:border-0 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-sm"
     />
     {errors.image && <p className="text-sm text-red-500 mt-1">{errors.image}</p>}
   </div>
@@ -139,7 +144,8 @@ const { data, setData, post, processing, errors } = useForm<{
       multiple
       accept="image/*"
       onChange={e => setData('images', Array.from(e.target.files || []))}
-      className="w-full file:bg-blue-100 file:text-blue-700 dark:file:bg-gray-700 dark:file:text-white file:px-4 file:py-2 file:rounded-xl file:border-0 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-sm"
+      className="w-full file:bg-blue-100 file:text-blue-700 dark:file:bg-gray-700 dark:file:text-white file:px-4
+       file:py-2 file:rounded-xl file:border-0 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-sm"
     />
     <p className="text-xs text-gray-500 mt-1">
       Kamu bisa memilih beberapa gambar sekaligus.
@@ -159,7 +165,8 @@ const { data, setData, post, processing, errors } = useForm<{
           Array.from(e.target.selectedOptions).map(option => Number(option.value))
         )
       }
-      className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 h-32 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+      className="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 h-32 focus:outline-none focus:ring-2
+       focus:ring-blue-500 shadow-sm"
     >
       {areas.map(area => (
         <option key={area.id} value={area.id}>
@@ -175,21 +182,15 @@ const { data, setData, post, processing, errors } = useForm<{
     <button
       type="submit"
       disabled={processing}
-      className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold py-3 px-6 rounded-xl shadow-md transition-all duration-300 disabled:opacity-60"
-    >
-      Simpan
-    </button>
+      className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold py-3 px-6 rounded-xl shadow-md
+       transition-all duration-300 disabled:opacity-60" > Simpan</button>
   </div>
 </form>
-
-
-
         </div>
       </div>
     </AppLayout>
   );
 }
-
 // Komponen reusable form field
 function FormField({
   label,

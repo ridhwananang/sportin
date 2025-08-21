@@ -1,74 +1,131 @@
-import React, { useState } from 'react';
-import { usePage, Link, router } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal';
-import type { PageProps, Sport, User } from '@/types';
-import { FaEnvelope, FaPhone, FaLinkedin, FaXTwitter, FaInstagram, FaFacebook } from "react-icons/fa6";
+import React, { useState, useEffect } from "react";
+import { usePage, Link } from "@inertiajs/react";
+import AppLayout from "@/layouts/app-layout";
+import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
+import type { PageProps, Sport, User } from "@/types";
+import { FiSearch, FiSliders } from "react-icons/fi";
+import { AiFillStar } from "react-icons/ai";
 
 interface Props extends PageProps {
   sports: Sport[];
-  auth: {
-    user: User;
-  };
+  auth: { user: User };
 }
 
 export default function Dashboard() {
   const { sports, auth } = usePage<Props>().props;
-  const role = auth?.user?.role ?? '';
-  const isSuperAdmin = role === 'super_admin';
+  const role = auth?.user?.role ?? "";
+  const isSuperAdmin = role === "super_admin";
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedSport, setSelectedSport] = useState<Sport | null>(null);
+
+  // Search lokal
+  const [q, setQ] = useState("");
 
   const handleDelete = (sport: Sport) => {
     setSelectedSport(sport);
     setModalOpen(true);
   };
 
-  
+  const formatRp = (n: number | string) =>
+    typeof n === "number" ? `Rp.${n.toLocaleString("id-ID")}` : `Rp.${n}`;
+
+  // ========== HERO SLIDER ==========
+  const heroImages = [
+    "/img/hero.jpg",
+    "/img/hero1.jpg",
+    "/img/hero2.jpg",
+    "/img/hero3.jpg",
+    "/img/hero4.jpg",
+  ];
+
+  const gradients = [
+    "from-[#00c6fb] via-[#005bea] to-[#f0faff]",
+    "from-[#d4fc79] via-[#96e6a1] to-[#f0fff4]",
+    "from-[#ffecd2] via-[#fcb69f] to-[#fff5f5]",
+    "from-[#232526] via-[#414345] to-[#e0e0e0]",
+    "from-[#2c3e50] via-[#000000] to-[#434343]",
+  ];
+
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % heroImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
 
   return (
     <AppLayout>
-        <div
-                className="relative min-h-screen flex flex-col bg-cover bg-center"
-                style={{ backgroundImage: "url('/img/stadium.jpg')" }}
+      <section className="relative w-full">
+        {/* HERO SLIDER */}
+        <div className="relative h-[260px] sm:h-[320px] md:h-[400px] overflow-hidden rounded-b-3xl">
+          {heroImages.map((img, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-all duration-700 ease-in-out flex items-center justify-center 
+                bg-gradient-to-r ${gradients[index % gradients.length]} 
+                ${index === current ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`}
             >
-                {/* Overlay efek gelap */}
-                <div className="absolute inset-0 bg-black/40" />
-
-            
-
-                {/* Hero Section */}
-                <div className="relative z-10 flex flex-col justify-center items-start text-left text-white px-6 md:px-20 pt-32 md:pt-40 max-w-2xl">
-                    <h1 className="text-2xl md:text-6xl font-bold font-poppins">
-                        YOUR DREAM <br /> IS OUR <span className="text-red-500">MOTIVATION</span>
-                    </h1>
-                    <p className="mt-4 text-xs md:text-base font-light font-inter leading-relaxed">
-                        Play like a pro and get your degree. This is college sports. Welcome to the place where your dream of studying and playing at an American university comes to life. Join us and start your journey to excellence in academics and athletics.
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mt-6 w-full font-inter">
-                        <a
-                            href="#"
-                            className="flex-1 text-center px-4 py-2 md:px-6 md:py-3 bg-red-600 text-white rounded-md font-semibold hover:bg-red-700 hover:scale-105 transition duration-300"
-                        >
-                            CHANGE YOUR LIFE NOW!
-                        </a>
-                        <a
-                            href="#"
-                            className="flex-1 text-center px-4 py-2 md:px-6 md:py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 hover:scale-105 transition duration-300"
-                        >
-                            QUALIFY FOR A SCHOLARSHIP
-                        </a>
-                    </div>
-                </div>
+              {/* Card gambar */}
+              <div className="max-w-[90%] sm:max-w-[70%] md:max-w-[60%] bg-white/20 backdrop-blur-md rounded-2xl shadow-lg p-4">
+                <img
+                  src={img}
+                  alt={`Slide ${index}`}
+                  className="w-full h-full max-h-[280px] sm:max-h-[320px] md:max-h-[360px] object-contain mx-auto"
+                />
+              </div>
             </div>
-      <div className="p-6 max-w-7xl mx-auto">
-        
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-            Dashboard
-          </h1>
+          ))}
+
+          {/* Dots navigation */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+            {heroImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrent(index)}
+                className={`w-3 h-3 rounded-full transition-all ${
+                  index === current ? "bg-yellow-400 w-6" : "bg-white/70"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* SEARCH & FILTER */}
+        <div className="w-full px-4 sm:px-6 mt-6">
+          <div className="flex items-center gap-3 max-w-3xl mx-auto bg-blue-50 dark:bg-gray-800 rounded-2xl shadow-lg p-2">
+            {/* Search */}
+            <div className="flex-1 flex items-center pl-2">
+              <FiSearch className="text-gray-400 text-xl mr-2" />
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search"
+                className="flex-1 bg-transparent outline-none text-gray-700 dark:text-gray-100 placeholder:text-gray-400 py-2"
+              />
+            </div>
+            {/* Filter */}
+            <button
+              type="button"
+              className="p-3 bg-white dark:bg-gray-700 rounded-xl hover:shadow-md transition"
+              aria-label="Filter"
+            >
+              <FiSliders className="text-gray-600 dark:text-gray-200 text-xl" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= CARD SHOP ================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 mt-12 mb-16">
+        <div className="flex justify-between items-center mb-4">
+          {isSuperAdmin && (
+            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-300">
+              Mode Admin
+            </div>
+          )}
         </div>
 
         {sports.length === 0 ? (
@@ -76,135 +133,90 @@ export default function Dashboard() {
             Belum ada data olahraga.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {sports.map((sport) => (
-              <Link
-                key={sport.id}
-                href={`/sports/${sport.id}`}
-                className="block bg-white dark:bg-gray-800 rounded-xl shadow-md
-                  hover:shadow-lg transition-shadow duration-300 overflow-hidden
-                  focus:outline-none focus:ring-4 focus:ring-indigo-500"
-              >
-                {sport.image ? (
-                  <img
-                    src={`/storage/${sport.image}`}
-                    alt={sport.name}
-                    className="w-full h-40 object-cover rounded-t-xl"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="w-full h-40 flex items-center justify-center
-                    bg-gray-200 dark:bg-gray-700 text-gray-400 text-sm rounded-t-xl"
-                  >
-                    Tidak ada gambar
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6">
+            {sports
+              .filter((s) =>
+                q ? (s.name ?? "").toLowerCase().includes(q.toLowerCase()) : true
+              )
+              .map((sport) => (
+                <Link
+                  key={sport.id}
+                  href={`/sports/${sport.id}`}
+                  className="group block bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-md hover:shadow-lg transition overflow-hidden focus:outline-none focus:ring-4 focus:ring-indigo-500/40"
+                >
+                  {/* Gambar */}
+                  <div className="relative">
+                    {sport.image ? (
+                      <img
+                        src={`/storage/${sport.image}`}
+                        alt={sport.name}
+                        className="w-full h-32 sm:h-48 object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-32 sm:h-48 flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-gray-400 text-sm">
+                        Tidak ada gambar
+                      </div>
+                    )}
+                    {/* Badge */}
+                    <span className="absolute top-2 left-2 sm:top-3 sm:left-3 text-[10px] sm:text-xs font-semibold bg-amber-100 text-amber-800 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full shadow-sm">
+                      PT PUT
+                    </span>
                   </div>
-                )}
 
-                <div className="p-4 space-y-2">
-                  <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-                    {sport.name}
-                  </h2>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 min-h-[3rem]">
-                    {sport.description || 'Tanpa Deskripsi'}
-                  </p>
-                </div>
+                  {/* Konten */}
+                  <div className="p-2 sm:p-4">
+                    <h3 className="text-sm sm:text-lg font-semibold text-gray-800 dark:text-white truncate">
+                      {sport.name}
+                    </h3>
 
-                <div className="p-4 space-y-1 border-t border-gray-200 dark:border-gray-700">
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    <span className="font-medium">Tipe:</span> {sport.type === 'team' ? 'Tim' : 'Individu'}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    <span className="font-medium">Harga:</span> Rp{sport.price.toLocaleString()}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
-                    <span className="font-medium">Area:</span>{' '}
-                    {sport.areas?.length
-                      ? sport.areas.map((a) => a.location).join(', ')
-                      : 'Belum diatur'}
-                  </p>
+                    {/* Rating & Lokasi */}
+                    <div className="mt-0.5 sm:mt-1 flex items-center text-[11px] sm:text-sm text-gray-600 dark:text-gray-300 gap-1 sm:gap-2">
+                      <AiFillStar className="text-yellow-400 text-xs sm:text-base" />
+                      <span>4.9</span>
+                      <span className="mx-0.5 sm:mx-1">|</span>
+                      <span className="truncate">
+                        {sport.areas?.length
+                          ? sport.areas.map((a) => a.location).join(", ")
+                          : "Lokasi belum diatur"}
+                      </span>
+                    </div>
 
-                </div>
-              </Link>
-            ))}
+                    {/* Deskripsi */}
+                    <p className="mt-1 sm:mt-2 text-[11px] sm:text-sm text-gray-700 dark:text-gray-300 min-h-[2.5rem] line-clamp-2">
+                      {sport.description || "Tanpa Deskripsi"}
+                    </p>
+
+                    {/* Harga */}
+                    <div className="mt-2 sm:mt-4">
+                      <span className="text-red-600 font-bold text-xs sm:text-base">
+                        {typeof sport.price === "number"
+                          ? formatRp(sport.price)
+                          : `Rp.${sport.price}`}
+                      </span>
+                      <span className="text-gray-500 text-[10px] sm:text-sm">
+                        /sesi
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
           </div>
         )}
-      </div>
-      <footer className="bg-black text-white">
-                      {/* Bagian Atas dengan Background Gradien */}
-                      <div className="bg-gradient-to-b from-red-700 to-red-900 text-center py-16 px-6 relative overflow-hidden">
-                          <h2 className="text-2xl md:text-4xl font-bold font-poppins">
-                              Let’s make something <br className="hidden md:block"/> great together.
-                          </h2>
-                          <p className="mt-4 text-white/80 max-w-md mx-auto text-sm md:text-base font-inter">
-                              Let us know what challenges you are trying to solve so we can help.
-                          </p>
-                          <a 
-                              href="#"
-                              className="mt-6 inline-flex items-center justify-center w-12 h-12 rounded-full border border-white text-white hover:bg-white hover:text-red-700 transition duration-300"
-                          >
-                              →
-                          </a>
-                      </div>
-      
-                      {/* Bagian Tengah Footer */}
-                      <div className="container mx-auto px-6 md:px-20 py-12 grid grid-cols-1 md:grid-cols-4 gap-10 text-center md:text-left">
-                          {/* Logo dan Deskripsi */}
-                          <div>
-                              <h3 className="text-2xl font-bold font-poppins mb-4">Transparent</h3>
-                              <p className="text-white/70 text-sm leading-relaxed">
-                                  Fokus pada penyediaan solusi olahraga terpadu untuk komunitas Anda.
-                              </p>
-      
-                              {/* Ikon Sosial Media */}
-                              <div className="flex justify-center md:justify-start gap-4 mt-6 text-xl">
-                                  <a href="#" className="hover:text-red-500 transition"><FaEnvelope /></a>
-                                  <a href="#" className="hover:text-red-500 transition"><FaPhone /></a>
-                                  <a href="#" className="hover:text-red-500 transition"><FaLinkedin /></a>
-                                  <a href="#" className="hover:text-red-500 transition"><FaXTwitter /></a>
-                                  <a href="#" className="hover:text-red-500 transition"><FaInstagram /></a>
-                                  <a href="#" className="hover:text-red-500 transition"><FaFacebook /></a>
-                              </div>
-                          </div>
-      
-                          {/* Menu Navigasi */}
-                          <div>
-                              <h4 className="font-semibold mb-4">Company</h4>
-                              <ul className="space-y-2 text-white/70 text-sm">
-                                  <li><a href="#" className="hover:text-white transition">Home</a></li>
-                                  <li><a href="#" className="hover:text-white transition">About Us</a></li>
-                                  <li><a href="#" className="hover:text-white transition">Services</a></li>
-                                  <li><a href="#" className="hover:text-white transition">Products</a></li>
-                                  <li><a href="#" className="hover:text-white transition">Contact Us</a></li>
-                              </ul>
-                          </div>
-      
-                          {/* Menu Sosial Media */}
-                          <div>
-                              <h4 className="font-semibold mb-4">Social</h4>
-                              <ul className="space-y-2 text-white/70 text-sm">
-                                  <li><a href="#" className="hover:text-white transition">LinkedIn</a></li>
-                                  <li><a href="#" className="hover:text-white transition">Twitter</a></li>
-                                  <li><a href="#" className="hover:text-white transition">Instagram</a></li>
-                                  <li><a href="#" className="hover:text-white transition">Facebook</a></li>
-                              </ul>
-                          </div>
-      
-                          {/* Legal */}
-                          <div>
-                              <h4 className="font-semibold mb-4">Legal</h4>
-                              <ul className="space-y-2 text-white/70 text-sm">
-                                  <li><a href="#" className="hover:text-white transition">Terms and Conditions</a></li>
-                                  <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
-                                  <li><a href="#" className="hover:text-white transition">About Cookies</a></li>
-                              </ul>
-                          </div>
-                      </div>
-      
-                      {/* Bagian Bawah Footer */}
-                      <div className="border-t border-white/10 py-6 text-center text-white/50 text-xs px-6">
-                          © 2025 Transparent. All rights reserved.
-                      </div>
-                  </footer>
+      </section>
+
+      {/* Modal */}
+      <ConfirmDeleteModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={() => {
+          setModalOpen(false);
+        }}
+        title="Hapus Data"
+        message={
+          selectedSport ? `Hapus ${selectedSport.name}?` : "Yakin hapus data ini?"
+        }
+      />
     </AppLayout>
   );
 }

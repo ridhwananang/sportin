@@ -85,8 +85,6 @@ class SportController extends Controller
             'auth' => [
                 'user' => Auth::user(),
             ],
-
-
         ]);
     }
 
