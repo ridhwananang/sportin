@@ -16,6 +16,19 @@ export default function Show() {
   const images = sport.images ?? [];
   const [selectedImage, setSelectedImage] = useState(images[0]);
 
+   const [modalOpen, setModalOpen] = useState(false);
+    const [modalImage, setModalImage] = useState<string | null>(null);
+  
+    const openModal = (img: string) => {
+      setModalImage(img);
+      setModalOpen(true);
+    };
+  
+    const closeModal = () => {
+      setModalOpen(false);
+      setModalImage(null);
+    };
+
   return (
     <AppLayout>
       <div className="p-3 max-w-7xl mx-auto">
@@ -23,23 +36,40 @@ export default function Show() {
 
           {/* --- Kiri: Gambar & Thumbnail --- */}
           <div className="md:col-span-6">
-            <img
-              src={selectedImage}
-              alt="Product"
-              className="w-full max-h-[450px] object-cover rounded-2xl shadow-md"
-            />
-            <div className="flex gap-3 mt-4 justify-center">
-              {images.map((img, idx) => (
+            {sport.image ? (
                 <img
-                  key={idx}
-                  src={img}
-                  alt={`Thumbnail ${idx}`}
-                  onClick={() => setSelectedImage(img)}
-                  className={`w-20 h-16 object-cover rounded-lg cursor-pointer border-2 transition-transform hover:scale-105 ${
-                    selectedImage === img ? "border-indigo-500" : "border-transparent"
-                  }`}
+                  src={`/storage/${sport.image}`}
+                  alt={sport.name}
+                  className="w-full max-h-[400px] object-cover rounded-t-2xl"
+                  loading="lazy"
+                  draggable={false}
                 />
-              ))}
+              ) : (
+                <div className="w-full h-64 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 text-sm font-medium select-none rounded-t-2xl">
+                  Tidak ada gambar
+                </div>
+              )}
+            <div className="flex gap-3 mt-4 justify-center">
+{images.length > 0 && (
+                <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {images.map((img, idx) => {
+                    const imgSrc = typeof img === 'string' ? img : img.image;
+                    return (
+                      <div
+                        key={idx}
+                        className="cursor-pointer overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300"
+                        onClick={() => openModal(`/storage/${imgSrc}`)}
+                      >
+                        <img
+                          src={`/storage/${imgSrc}`}
+                          alt={`Gallery ${idx + 1}`}
+                          className="w-full h-40 object-cover transform hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
 
@@ -60,8 +90,15 @@ export default function Show() {
 
             {/* Alamat Utama */}
             <p className="text-gray-800 dark:text-gray-200 text-base leading-relaxed">
-              Jl. Pintu Satu Senayan, Gelora, Kecamatan Tanah Abang, Kota Jakarta Pusat, 
-              Daerah Khusus Ibukota Jakarta 10270
+             {sport.areas?.length > 0 ? (
+                    sport.areas.map((area) => (
+                      <span key={area.id} className="block">
+                        {area.address}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="italic">Belum diatur</span>
+                  )}
             </p>
 
             {/* Rating */}
@@ -128,7 +165,7 @@ export default function Show() {
               bg-gray-600 text-white font-semibold shadow-md text-center
               transition duration-300 hover:bg-gray-700 active:scale-95"
           >
-            BOOKINHG
+            BOOKING
           </Link>
         ) : (
           <Link
